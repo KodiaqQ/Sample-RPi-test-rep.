@@ -2,6 +2,7 @@
 import RPi.GPIO as gp
 from time import sleep
 
+# установка вида подключения пинов
 gp.setmode(gp.BCM)
 
 # обозначения пинов
@@ -23,37 +24,39 @@ pwmUp = gp.PWM(pinUp, 50)
 pwmUp.start(0)
 pwmRound = gp.PWM(pinRound, 50)
 pwmRound.start(0)
-pinRoundGrab = gp.PWM(pinRoundGrab, 50)
-pinRoundGrab.start(0)
+pwmRoundGrab = gp.PWM(pinRoundGrab, 50)
+pwmRoundGrab.start(0)
+
 
 # функция для установления угла поворота мотора
-def SetAngle(pwm, pin, angle):
+def set_angle(pwm, pin, angle):
     angle = angle / 18 + 2
     gp.output(pin, True)
     pwm.ChangeDutyCycle(angle)
     sleep(1)
 
 
-# циклическое выполнение программы
-while True:
-    # опускаем захват
-    SetAngle(pwmUp, pinUp, 135)
-    # захватываем деталь
-    SetAngle(pwmGrab, pinGrab, 90)
-    # поднимаем захват с деталью
-    SetAngle(pwmUp, pinUp, 45)
-    # поворот захвата вокруг центральной оси на 90 градусов
-    SetAngle(pwmRoundGrab, pinRoundGrab, 90)
-    # поворот на 180 градусов вокруг оси робота
-    SetAngle(pwmRound, pinRound, 180)
-    # опускаем захват
-    SetAngle(pwmUp, pinUp, 135)
-    # разжимаем захват
-    SetAngle(pwmGrab, pinGrab, 0)
-    # возвращаем в исходное положение
-    SetAngle(pwmUp, pinUp, 0)
-    SetAngle(pwmRoundGrab, pinRoundGrab, 0)
-    SetAngle(pwmRound, pinRound, 0)
+if __name__ == '__main__':
+    # циклическое выполнение программы
+    while True:
+        # опускаем захват
+        set_angle(pwmUp, pinUp, 135)
+        # захватываем деталь
+        set_angle(pwmGrab, pinGrab, 90)
+        # поднимаем захват с деталью
+        set_angle(pwmUp, pinUp, 45)
+        # поворот захвата вокруг центральной оси на 90 градусов
+        set_angle(pwmRoundGrab, pinRoundGrab, 90)
+        # поворот на 180 градусов вокруг оси робота
+        set_angle(pwmRound, pinRound, 180)
+        # опускаем захват
+        set_angle(pwmUp, pinUp, 135)
+        # разжимаем захват
+        set_angle(pwmGrab, pinGrab, 0)
+        # возвращаем в исходное положение
+        set_angle(pwmUp, pinUp, 0)
+        set_angle(pwmRoundGrab, pinRoundGrab, 0)
+        set_angle(pwmRound, pinRound, 0)
 
-# очистка пинов от значений, установленных ранее
-gp.cleanup()
+    # очистка пинов от значений, установленных ранее
+    gp.cleanup()
