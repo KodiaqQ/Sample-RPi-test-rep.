@@ -1,19 +1,22 @@
+# импорт необходимых модулей Python для работы
 import RPi.GPIO as gp
 from time import sleep
 
 gp.setmode(gp.BCM)
+
+# обозначения пинов
 pinGrab = 14
 pinUp = 15
 pinRound = 18
 pinRoundGrab = 23
 
-# enable pins
+# включение пинов в состояние OUT (вывода сигнала)
 gp.setup(pinGrab, gp.OUT)
 gp.setup(pinUp, gp.OUT)
 gp.setup(pinRound, gp.OUT)
 gp.setup(pinRoundGrab, gp.OUT)
 
-# enable PWM
+# инициализация PWM (ШИМ) для каждого пина
 pwmGrab = gp.PWM(pinGrab, 50)
 pwmGrab.start(0)
 pwmUp = gp.PWM(pinUp, 50)
@@ -23,14 +26,15 @@ pwmRound.start(0)
 pinRoundGrab = gp.PWM(pinRoundGrab, 50)
 pinRoundGrab.start(0)
 
-# function for motor move by angle change
+# функция для установления угла поворота мотора
 def SetAngle(pwm, pin, angle):
     angle = angle / 18 + 2
     gp.output(pin, True)
     pwm.ChangeDutyCycle(angle)
     sleep(1)
 
-    
+
+# циклическое выполнение программы
 while True:
     # опускаем захват
     SetAngle(pwmUp, pinUp, 135)
@@ -50,5 +54,6 @@ while True:
     SetAngle(pwmUp, pinUp, 0)
     SetAngle(pwmRoundGrab, pinRoundGrab, 0)
     SetAngle(pwmRound, pinRound, 0)
-    
+
+# очистка пинов от значений, установленных ранее
 gp.cleanup()
